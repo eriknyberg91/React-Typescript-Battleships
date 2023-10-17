@@ -1,22 +1,32 @@
 import React, { useState } from 'react';
-import logo from './logo.svg';
-import './App.css';
 import BattleZone from './Components/BattleZone/BattleZone';
 import BattleMap from './Components/BattleMap/BattleMap';
 import IBattleZone from './Classes/IBattleZone';
 
 function App() {
 
-  const [zoneList, setZoneList] = useState<IBattleZone[]>([
-    {id: 1, isClicked: false},
-    {id: 2, isClicked: false},
-    {id: 3, isClicked: false},
-    {id: 4, isClicked: false},
-    {id: 5, isClicked: false}
-  ])
+  const numberOfZones = 25;
+
+  const generateZoneList = Array.from({length: numberOfZones}, (_, index) => ({
+    id: index + 1,
+    isClicked: false,
+    clickedByPlayerOne: false,
+    clickedByPlayerTwo: false
+    })    
+  )
+
+  const [zoneList, setZoneList] = useState<IBattleZone[]>(generateZoneList)
 
   const handleClick = (id: number) => {
     console.log(id);
+    setZoneList(
+      zoneList.map((zone) => {
+        if (zone.id == id) {
+          return {...zone, isClicked: !zone.isClicked}
+        }
+        return zone;
+      })
+    )
   }
   
 
