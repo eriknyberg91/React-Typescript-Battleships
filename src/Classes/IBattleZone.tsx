@@ -2,16 +2,14 @@
 
 export default class IBattleZone {
     id : number;
-    isClicked : boolean;
-    clickedByPlayerOne: boolean;
-    clickedByPlayerTwo: boolean;
+    shipPlacedByPlayerOne: boolean;
+    shipPlacedByPlayerTwo: boolean;
 
 
-    constructor (id: number, isClicked: boolean, clickedByPlayerOne: boolean, clickedByPlayerTwo: boolean) {
+    constructor (id: number, shipPlacedByPlayerOne: boolean, shipPlacedByPlayerTwo: boolean) {
         this.id = id;
-        this.isClicked = isClicked;
-        this.clickedByPlayerOne = clickedByPlayerOne;
-        this.clickedByPlayerTwo = clickedByPlayerTwo;
+        this.shipPlacedByPlayerOne = shipPlacedByPlayerOne;
+        this.shipPlacedByPlayerTwo = shipPlacedByPlayerTwo;
 
     }
 

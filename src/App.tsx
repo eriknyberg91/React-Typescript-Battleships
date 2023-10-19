@@ -5,7 +5,7 @@ import IBattleZone from './Classes/IBattleZone';
 import IPlayer from './Classes/IPlayer';
 
 function App() {
-
+  //TODO : Bort med testplayer (används för currentPlayer state)
   const testPlayer : IPlayer =
   {id: 3,
     playerName: "test Player",
@@ -19,40 +19,46 @@ function App() {
   const [currentPlayer, setCurrentPlayer] = useState<IPlayer>(testPlayer);
   
 
-  const setActivePlayer = () =>{
-    players.map((player) => {
-      if (player.isPlaying == true) {
-        setCurrentPlayer(player)
-      }
-      
-    })
-      console.log(currentPlayer);
-      
-      
-  }
-  
-  const changeActivePlayer = (id: number) => {
-    setActivePlayer();
+
+//Maps over array of players to swap player turn and set current player.
+  const changeActivePlayer = () => {
     players.map((player) => {
       if (player.isPlaying == false || player.isPlaying == true) {
-        player.isPlaying= !player.isPlaying;
+            player.isPlaying= !player.isPlaying;
       }
-    })
-    }
-        
-    
-    
-    
+      if (player.isPlaying == true) {
+            setCurrentPlayer(player)
+      }})
+  }
+
+//TODO: Is this function needed?    
   const handleClick = (id: number) => {
     console.log(id);
     setZoneList(
       zoneList.map((zone) => {
         if (zone.id == id) {
-          return {...zone, isClicked: !zone.isClicked}
+          return zone;
         }
         return zone;
         
-      }))}
+      }))
+  }
+//TODO: Testing if it works as planned, implement style for each scenario
+  const handleShipPlacement = (id: number) => {
+    console.log("zone.id:", id);
+    console.log("currentPlayer.id:", currentPlayer.id);
+    setZoneList(
+      zoneList.map((zone) => {
+        if (zone.id == id && currentPlayer.id == 1) {
+          return {...zone, shipPlacedByPlayerOne: true}
+        }
+        else if (zone.id == id && currentPlayer.id == 2){
+          return {...zone, shipPlacedByPlayerTwo: true}
+        }
+        return zone;
+        
+      }))
+  }
 
   
   
@@ -81,9 +87,8 @@ function App() {
 
   const generateZoneList = Array.from({length: numberOfZones}, (_, index) => ({
     id: index + 1,
-    isClicked: false,
-    clickedByPlayerOne: false,
-    clickedByPlayerTwo: false
+    shipPlacedByPlayerOne: false,
+    shipPlacedByPlayerTwo: false
     })    
   )
 
@@ -96,10 +101,10 @@ function App() {
     <div className="App">
       <h1>BattleShips</h1>
       <BattleMap 
+      handleFire={handleShipPlacement}
       list={zoneList}
       currentPlayer={currentPlayer} 
       handleClick={handleClick}
-      setActivePlayer={setActivePlayer}
       changeActivePlayer={changeActivePlayer} />
     </div>
   );

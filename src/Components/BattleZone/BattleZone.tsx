@@ -9,7 +9,6 @@ const BattleZone = (x: IBattleZone, ) => {
     <div className="battle-zone-container" >
         <h3>BattleZone Component</h3>
         <p>Id: {x.id}</p>
-        <p>isClicked: {x.isClicked}</p>
     </div>
     
   )
