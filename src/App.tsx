@@ -31,6 +31,9 @@ function App() {
       }})
   }
 
+  
+
+
 //TODO: Is this function needed?    
   const handleClick = (id: number) => {
     console.log(id);
@@ -44,21 +47,41 @@ function App() {
       }))
   }
 //TODO: Testing if it works as planned, implement style for each scenario
-  const handleShipPlacement = (id: number) => {
-    console.log("zone.id:", id);
-    console.log("currentPlayer.id:", currentPlayer.id);
+//TODO: Move on to Fire Phase, stop ShipCount going down?
+  const handleShipPlacement = (id: number, currentPlayer: IPlayer) => {
+    
     setZoneList(
       zoneList.map((zone) => {
-        if (zone.id == id && currentPlayer.id == 1) {
-          return {...zone, shipPlacedByPlayerOne: true}
+        if (zone.id == id && currentPlayer.id == 1 && currentPlayer.shipsLeftToPlace > 0) {
+          return  {...zone, shipPlacedByPlayerOne: !zone.shipPlacedByPlayerOne}
         }
-        else if (zone.id == id && currentPlayer.id == 2){
-          return {...zone, shipPlacedByPlayerTwo: true}
+        else if (zone.id == id && currentPlayer.id == 2  && currentPlayer.shipsLeftToPlace > 0){
+          return {...zone, shipPlacedByPlayerTwo: !zone.shipPlacedByPlayerTwo}
         }
-        return zone;
         
+        return zone;
       }))
+      decreaseCurrentPlayerShipCount();
+      changeActivePlayer();     
   }
+//TODO: Move on to Fire Phase, stop ShipCount going down?
+  const decreaseCurrentPlayerShipCount = () => {
+    if (currentPlayer.shipsLeftToPlace != 0){
+      setPlayers(players => {
+        return players.map(player => {
+          if (player.id === currentPlayer.id) {
+            return {
+              ...player,
+              shipsLeftToPlace: player.shipsLeftToPlace - 1
+            };
+          }
+          return player;
+        });
+      });
+    }
+  };
+
+  
 
   
   
@@ -101,7 +124,7 @@ function App() {
     <div className="App">
       <h1>BattleShips</h1>
       <BattleMap 
-      handleFire={handleShipPlacement}
+      handleShipPlacement={handleShipPlacement}
       list={zoneList}
       currentPlayer={currentPlayer} 
       handleClick={handleClick}
