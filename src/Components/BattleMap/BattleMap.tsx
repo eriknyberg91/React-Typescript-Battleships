@@ -8,12 +8,13 @@ interface Props {
   handleClick(id: number): void;
   handleShipPlacement(id: number, currentPlayer: IPlayer): void;
   changePlayer(): void;
+  handlePlayerFire(): void;
   playerOne: IPlayer;
   playerTwo: IPlayer;
 
 }
 
-const BattleMap = ({list,playerOne, playerTwo, handleClick,handleShipPlacement, changePlayer}: Props) => {
+const BattleMap = ({list,playerOne, playerTwo, handleClick,handleShipPlacement, changePlayer, handlePlayerFire}: Props) => {
 
   return (
     <div className="battle-map-container">
@@ -23,9 +24,11 @@ const BattleMap = ({list,playerOne, playerTwo, handleClick,handleShipPlacement, 
       </div>
       <div className="battlemap">
         {list.map((zone) => (
-          <div className="battle-zone" onClick={() => handleClick(zone.id)}>
+          <div className="battle-zone" >
             <h6>{zone.id}</h6>
-            <p>Battle Zone</p>
+            <p >Battle Zone</p>
+            <button onClick={() => handleClick(zone.id)}>Ship</button>
+            <button onClick={handlePlayerFire}>Fire</button>
           </div>
         ))}
       </div>

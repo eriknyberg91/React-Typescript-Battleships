@@ -60,30 +60,49 @@ const changePlayer = () => {
 };
 
 const handleShipPlacement = (id: number) => {
+  
+  if(playerOne.shipsLeftToPlace == 0 && playerOne.isPlaying) {
+    changePlayer()
+  }
+  //TODO: Shorten if-statements?
   setZoneList(
     zoneList.map((zone) => {
-      if (zone.id == id && playerOne.isPlaying == true && playerOne.shipsLeftToPlace > 0) {
+      if (zone.id == id && playerOne.isPlaying == true && playerOne.shipsLeftToPlace > 0 && zone.shipPlacedByPlayerOne == false) {
+        removeOneShipFromPlayer()
         return  {...zone, shipPlacedByPlayerOne: !zone.shipPlacedByPlayerOne}
       }
-      else if (zone.id == id && playerTwo.isPlaying == true  && playerTwo.shipsLeftToPlace > 0){
+      else if (zone.id == id && playerTwo.isPlaying == true  && playerTwo.shipsLeftToPlace > 0 && zone.shipPlacedByPlayerTwo == false){
+        removeOneShipFromPlayer()
         return {...zone, shipPlacedByPlayerTwo: !zone.shipPlacedByPlayerTwo}
       }
       return zone;
+
     }))
 }
 
-  const decreaseCurrentPlayerShipCount = () => {
-    if (currentPlayer == playerOne) {
-      setPlayerOne({...playerOne, shipsLeftToPlace: playerOne.shipsLeftToPlace - 1})
-    }
-    else if (currentPlayer == playerTwo){
-      setPlayerTwo({...playerTwo, shipsLeftToPlace: playerTwo.shipsLeftToPlace - 1})
-    }
-    console.log(playerOne)
-    console.log(playerTwo)
+const handlePlayerFire = () => {
+  alert("Fire phase");
+}
+
+const removeOneShipFromPlayer = () => {
+  
+  if (playerOne.isPlaying == true) {
+    setPlayerOne(prevPlayerOne => ({
+      ...prevPlayerOne,
+      shipsLeftToPlace: prevPlayerOne.shipsLeftToPlace - 1
+    }));
+    console.log(playerOne.shipsLeftToPlace)
+  }
+
+  else if (playerTwo.isPlaying == true) {
+    setPlayerTwo(prevPlayerTwo => ({
+      ...prevPlayerTwo,
+      shipsLeftToPlace: prevPlayerTwo.shipsLeftToPlace - 1
+    }));
   };
-
-
+    console.log(playerTwo.shipsLeftToPlace)
+  }
+  
   const generateZoneList = Array.from({length: numberOfZones}, (_, index) => ({
     id: index + 1,
     shipPlacedByPlayerOne: false,
@@ -93,14 +112,12 @@ const handleShipPlacement = (id: number) => {
 
   const [zoneList, setZoneList] = useState<IBattleZone[]>(generateZoneList)
 
-  
-  
-
   return (
    
     <div className="App">
       <h1>BattleShips</h1>
       <BattleMap 
+      handlePlayerFire={handlePlayerFire}
       playerOne={playerOne}
       playerTwo={playerTwo}
       changePlayer={changePlayer}
