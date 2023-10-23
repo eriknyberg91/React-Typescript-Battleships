@@ -6,6 +6,7 @@ import IBattleZone from '../../Classes/IBattleZone'
 
 const BattleZone = (x: IBattleZone, ) => {
   return (
+    
     <div className="battle-zone-container" >
         <h3>BattleZone Component</h3>
         <p>Id: {x.id}</p>

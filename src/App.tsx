@@ -80,8 +80,27 @@ const handleShipPlacement = (id: number) => {
     }))
 }
 
-const handlePlayerFire = () => {
-  alert("Fire phase");
+const handlePlayerFire = (id: number) => {
+  setZoneList(
+    zoneList.map((zone) => {
+      if (zone.id == id && playerOne.isPlaying == true && zone.shipPlacedByPlayerTwo) {
+        return  {...zone, successfullHitFromPlayerOne: zone.successfullHitFromPlayerOne = true}
+      }
+
+      else if (zone.id == id && playerOne.isPlaying == true && !zone.shipPlacedByPlayerTwo) {
+        return  {...zone, failedHitFromPlayerOne: zone.failedHitFromPlayerOne = true}
+      }
+
+      else if (zone.id == id && playerTwo.isPlaying == true && zone.shipPlacedByPlayerOne) {
+        return  {...zone, successfullHitFromPlayerTwo: zone.successfullHitFromPlayerTwo = true}
+      }
+
+      else if (zone.id == id && playerTwo.isPlaying == true && !zone.shipPlacedByPlayerOne) {
+        return  {...zone, failedHitFromPlayerTwo: zone.failedHitFromPlayerTwo = true}
+      }
+      return zone;
+
+    }))
 }
 
 const removeOneShipFromPlayer = () => {
@@ -106,7 +125,11 @@ const removeOneShipFromPlayer = () => {
   const generateZoneList = Array.from({length: numberOfZones}, (_, index) => ({
     id: index + 1,
     shipPlacedByPlayerOne: false,
-    shipPlacedByPlayerTwo: false
+    shipPlacedByPlayerTwo: false,
+    successfullHitFromPlayerOne: false,
+    successfullHitFromPlayerTwo: false,
+    failedHitFromPlayerOne: false,
+    failedHitFromPlayerTwo: false
     })    
   )
 

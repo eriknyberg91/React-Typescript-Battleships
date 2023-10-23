@@ -8,7 +8,7 @@ interface Props {
   handleClick(id: number): void;
   handleShipPlacement(id: number, currentPlayer: IPlayer): void;
   changePlayer(): void;
-  handlePlayerFire(): void;
+  handlePlayerFire(id: number): void;
   playerOne: IPlayer;
   playerTwo: IPlayer;
 
@@ -27,8 +27,10 @@ const BattleMap = ({list,playerOne, playerTwo, handleClick,handleShipPlacement, 
           <div className="battle-zone" >
             <h6>{zone.id}</h6>
             <p >Battle Zone</p>
+            <p>Hit</p>
+            <p>Miss</p>
             <button onClick={() => handleClick(zone.id)}>Ship</button>
-            <button onClick={handlePlayerFire}>Fire</button>
+            <button onClick={() => handlePlayerFire(zone.id)}>Fire</button>
           </div>
         ))}
       </div>
@@ -39,10 +41,11 @@ const BattleMap = ({list,playerOne, playerTwo, handleClick,handleShipPlacement, 
           <div
             className="battle-zone"
             onClick={() => handleClick(zone.id)}
-            style={{ backgroundColor: zone.shipPlacedByPlayerOne ? 'green' : 'white' }}
-          >
+            style={{ backgroundColor: zone.shipPlacedByPlayerOne ? 'black' : 'white' }}>
             <h6>{zone.id}</h6>
             <p>Battle Zone</p>
+            <p style={{color: zone.successfullHitFromPlayerOne ? 'green' : 'white'}}>Hit</p>
+            <p style={{color: zone.failedHitFromPlayerOne ? 'red' : 'white'}}>Miss</p>
           </div>
         ))}
       </div>
@@ -52,10 +55,11 @@ const BattleMap = ({list,playerOne, playerTwo, handleClick,handleShipPlacement, 
           <div
             className="battle-zone"
             onClick={() => handleClick(zone.id)}
-            style={{ backgroundColor: zone.shipPlacedByPlayerTwo ? 'blue' : 'white' }}
-          >
+            style={{ backgroundColor: zone.shipPlacedByPlayerTwo ? 'black' : 'white' }}>
             <h6>{zone.id}</h6>
             <p>Battle Zone</p>
+            <p style={{color: zone.successfullHitFromPlayerTwo ? 'green' : 'white'}}>Hit</p>
+            <p style={{color: zone.failedHitFromPlayerTwo ? 'red' : 'white'}}>Miss</p>
           </div>
         ))}
       </div>
