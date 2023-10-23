@@ -1,111 +1,87 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import BattleZone from './Components/BattleZone/BattleZone';
 import BattleMap from './Components/BattleMap/BattleMap';
 import IBattleZone from './Classes/IBattleZone';
 import IPlayer from './Classes/IPlayer';
 
 function App() {
-  //TODO : Bort med testplayer (används för currentPlayer state)
-  const testPlayer : IPlayer =
-  {id: 3,
-    playerName: "test Player",
+
+  
+  
+  const [playerOne, setPlayerOne] = useState<IPlayer>({
+    id: 1,
+    playerName: "playerOne",
+    shotsFired: 0,
+    shipsLeftToPlace: 5,
+    numberOfVictories: 0,
+    health: 5,
+    isPlaying: true
+  });
+  
+  const [playerTwo, setPlayerTwo] = useState<IPlayer>({
+    id: 2,
+    playerName: "playerTwo",
     shotsFired: 0,
     shipsLeftToPlace: 5,
     numberOfVictories: 0,
     health: 5,
     isPlaying: false
-  }
+  });
+
   const numberOfZones = 25;
-  const [currentPlayer, setCurrentPlayer] = useState<IPlayer>(testPlayer);
+  
+  //needed?
+  const [currentPlayer, setCurrentPlayer] = useState<IPlayer>(playerOne);
   
 
 
-//Maps over array of players to swap player turn and set current player.
-  const changeActivePlayer = () => {
-    players.map((player) => {
-      if (player.isPlaying == false || player.isPlaying == true) {
-            player.isPlaying= !player.isPlaying;
-      }
-      if (player.isPlaying == true) {
-            setCurrentPlayer(player)
-      }})
-  }
-
   
-
 
 //TODO: Is this function needed?    
-  const handleClick = (id: number) => {
-    console.log(id);
-    setZoneList(
-      zoneList.map((zone) => {
-        if (zone.id == id) {
-          return zone;
-        }
-        return zone;
-        
-      }))
+const handleClick = (id: number) => {
+  if (currentPlayer.shipsLeftToPlace > 0) {
+    handleShipPlacement(id);
   }
-//TODO: Testing if it works as planned, implement style for each scenario
-//TODO: Move on to Fire Phase, stop ShipCount going down?
-  const handleShipPlacement = (id: number, currentPlayer: IPlayer) => {
-    
-    setZoneList(
-      zoneList.map((zone) => {
-        if (zone.id == id && currentPlayer.id == 1 && currentPlayer.shipsLeftToPlace > 0) {
-          return  {...zone, shipPlacedByPlayerOne: !zone.shipPlacedByPlayerOne}
-        }
-        else if (zone.id == id && currentPlayer.id == 2  && currentPlayer.shipsLeftToPlace > 0){
-          return {...zone, shipPlacedByPlayerTwo: !zone.shipPlacedByPlayerTwo}
-        }
-        
-        return zone;
-      }))
-      decreaseCurrentPlayerShipCount();
-      changeActivePlayer();     
+  else if (currentPlayer.shipsLeftToPlace <= 0){
+    handleShipPlacement(id);
   }
-//TODO: Move on to Fire Phase, stop ShipCount going down?
-  const decreaseCurrentPlayerShipCount = () => {
-    if (currentPlayer.shipsLeftToPlace != 0){
-      setPlayers(players => {
-        return players.map(player => {
-          if (player.id === currentPlayer.id) {
-            return {
-              ...player,
-              shipsLeftToPlace: player.shipsLeftToPlace - 1
-            };
-          }
-          return player;
-        });
-      });
-    }
-  };
+};
 
-  
+const changePlayer = () => {
+  setPlayerOne(prevPlayerOne => ({
+    ...prevPlayerOne,
+    isPlaying: !prevPlayerOne.isPlaying,
+  }));
 
-  
-  
-  const [players, setPlayers] = useState <IPlayer[]>(
-    [
-      {
-        id: 1,
-        playerName: "playerOne",
-        shotsFired: 0,
-        shipsLeftToPlace: 5,
-        numberOfVictories: 0,
-        health: 5,
-        isPlaying: false},
-      {
-        id: 2,
-        playerName: "playerTwo",
-        shotsFired: 0,
-        shipsLeftToPlace: 5,
-        numberOfVictories: 0,
-        health: 5,
-        isPlaying: true
+  setPlayerTwo(prevPlayerTwo => ({
+    ...prevPlayerTwo,
+    isPlaying: !prevPlayerTwo.isPlaying,
+  }));
+};
+
+const handleShipPlacement = (id: number) => {
+  setZoneList(
+    zoneList.map((zone) => {
+      if (zone.id == id && playerOne.isPlaying == true && playerOne.shipsLeftToPlace > 0) {
+        return  {...zone, shipPlacedByPlayerOne: !zone.shipPlacedByPlayerOne}
       }
-  ])
+      else if (zone.id == id && playerTwo.isPlaying == true  && playerTwo.shipsLeftToPlace > 0){
+        return {...zone, shipPlacedByPlayerTwo: !zone.shipPlacedByPlayerTwo}
+      }
+      return zone;
+    }))
+}
 
+  const decreaseCurrentPlayerShipCount = () => {
+    if (currentPlayer == playerOne) {
+      setPlayerOne({...playerOne, shipsLeftToPlace: playerOne.shipsLeftToPlace - 1})
+    }
+    else if (currentPlayer == playerTwo){
+      setPlayerTwo({...playerTwo, shipsLeftToPlace: playerTwo.shipsLeftToPlace - 1})
+    }
+    console.log(playerOne)
+    console.log(playerTwo)
+  };
 
 
   const generateZoneList = Array.from({length: numberOfZones}, (_, index) => ({
@@ -121,14 +97,16 @@ function App() {
   
 
   return (
+   
     <div className="App">
       <h1>BattleShips</h1>
       <BattleMap 
+      playerOne={playerOne}
+      playerTwo={playerTwo}
+      changePlayer={changePlayer}
       handleShipPlacement={handleShipPlacement}
       list={zoneList}
-      currentPlayer={currentPlayer} 
-      handleClick={handleClick}
-      changeActivePlayer={changeActivePlayer} />
+      handleClick={handleClick} />
     </div>
   );
 }
