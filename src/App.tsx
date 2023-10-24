@@ -6,7 +6,16 @@ import IPlayer from './Classes/IPlayer';
 
 function App() {
 
-  
+  //TODO : 
+  //DONE  --- Place ships when shipcount > 0, move on to Fire phase 
+  //Use of current player instead of individual players?
+  //Re-render one battlemap rather than different ones
+  //Reduce health of player when ship gets hit, visual input
+  //End game when one player reaches 0 health
+  //Statistics
+  //Reset Game
+  //Styling
+
   
   const [playerOne, setPlayerOne] = useState<IPlayer>({
     id: 1,
@@ -29,23 +38,6 @@ function App() {
   });
 
   const numberOfZones = 25;
-  
-  //needed?
-  const [currentPlayer, setCurrentPlayer] = useState<IPlayer>(playerOne);
-  
-
-
-  
-
-//TODO: Is this function needed?    
-const handleClick = (id: number) => {
-  if (currentPlayer.shipsLeftToPlace > 0) {
-    handleShipPlacement(id);
-  }
-  else if (currentPlayer.shipsLeftToPlace <= 0){
-    handleShipPlacement(id);
-  }
-};
 
 const changePlayer = () => {
   setPlayerOne(prevPlayerOne => ({
@@ -61,7 +53,10 @@ const changePlayer = () => {
 
 const handleShipPlacement = (id: number) => {
   
-  if(playerOne.shipsLeftToPlace == 0 && playerOne.isPlaying) {
+  if(playerOne.shipsLeftToPlace === 1 && playerOne.isPlaying) {
+    changePlayer()
+  }
+  else if (playerTwo.shipsLeftToPlace === 1  && playerTwo.isPlaying){
     changePlayer()
   }
   //TODO: Shorten if-statements?
@@ -84,20 +79,31 @@ const handlePlayerFire = (id: number) => {
   setZoneList(
     zoneList.map((zone) => {
       if (zone.id == id && playerOne.isPlaying == true && zone.shipPlacedByPlayerTwo) {
+        //alert("Hit!")
+        removeHealthFromPlayer()
+        changePlayer()
         return  {...zone, successfullHitFromPlayerOne: zone.successfullHitFromPlayerOne = true}
       }
 
       else if (zone.id == id && playerOne.isPlaying == true && !zone.shipPlacedByPlayerTwo) {
+        //alert("Miss!")
+        changePlayer()
         return  {...zone, failedHitFromPlayerOne: zone.failedHitFromPlayerOne = true}
       }
 
       else if (zone.id == id && playerTwo.isPlaying == true && zone.shipPlacedByPlayerOne) {
+        //alert("Hit!")
+        removeHealthFromPlayer()
+        changePlayer()
         return  {...zone, successfullHitFromPlayerTwo: zone.successfullHitFromPlayerTwo = true}
       }
 
       else if (zone.id == id && playerTwo.isPlaying == true && !zone.shipPlacedByPlayerOne) {
+        //alert("Miss!")
+        changePlayer()
         return  {...zone, failedHitFromPlayerTwo: zone.failedHitFromPlayerTwo = true}
       }
+      
       return zone;
 
     }))
@@ -121,6 +127,29 @@ const removeOneShipFromPlayer = () => {
   };
     console.log(playerTwo.shipsLeftToPlace)
   }
+
+  const removeHealthFromPlayer = () => {
+    
+    
+    if (playerOne.isPlaying == true) {
+      setPlayerTwo(prevPlayerTwo => ({
+        ...prevPlayerTwo,
+        health: prevPlayerTwo.health - 1
+      }));
+    }
+
+    else if (playerTwo.isPlaying == true) {
+      setPlayerOne(prevPlayerOne => ({
+        ...prevPlayerOne,
+        health: prevPlayerOne.health - 1
+      }));
+    }
+
+    if (playerOne.health <= 1 || playerTwo.health <= 1){
+      alert("Game should end.")
+    }
+
+  };
   
   const generateZoneList = Array.from({length: numberOfZones}, (_, index) => ({
     id: index + 1,
@@ -145,8 +174,7 @@ const removeOneShipFromPlayer = () => {
       playerTwo={playerTwo}
       changePlayer={changePlayer}
       handleShipPlacement={handleShipPlacement}
-      list={zoneList}
-      handleClick={handleClick} />
+      list={zoneList} />
     </div>
   );
 }

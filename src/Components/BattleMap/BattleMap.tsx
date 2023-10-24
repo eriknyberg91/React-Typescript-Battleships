@@ -1,12 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import IBattleZone from '../../Classes/IBattleZone';
 import './BattleMap.css';
 import IPlayer from '../../Classes/IPlayer';
 
 interface Props {
   list: IBattleZone[];
-  handleClick(id: number): void;
-  handleShipPlacement(id: number, currentPlayer: IPlayer): void;
+  handleShipPlacement(id: number): void;
   changePlayer(): void;
   handlePlayerFire(id: number): void;
   playerOne: IPlayer;
@@ -14,8 +13,8 @@ interface Props {
 
 }
 
-const BattleMap = ({list,playerOne, playerTwo, handleClick,handleShipPlacement, changePlayer, handlePlayerFire}: Props) => {
-
+const BattleMap = ({list,playerOne, playerTwo, handleShipPlacement, changePlayer, handlePlayerFire}: Props) => {
+  
   return (
     <div className="battle-map-container">
       <div className="intro-container">
@@ -24,23 +23,23 @@ const BattleMap = ({list,playerOne, playerTwo, handleClick,handleShipPlacement, 
       </div>
       <div className="battlemap">
         {list.map((zone) => (
-          <div className="battle-zone" >
+          <div className="battle-zone" onClick={() => {playerOne.shipsLeftToPlace > 0 || playerTwo.shipsLeftToPlace > 0 ? handleShipPlacement(zone.id) : handlePlayerFire(zone.id)}} >
             <h6>{zone.id}</h6>
             <p >Battle Zone</p>
             <p>Hit</p>
             <p>Miss</p>
-            <button onClick={() => handleClick(zone.id)}>Ship</button>
+            
             <button onClick={() => handlePlayerFire(zone.id)}>Fire</button>
           </div>
         ))}
       </div>
       <br />
-      <h1>PlayerOne</h1>
-      <div className="battlemap">
+      
+      <div className="battlemap" style={{display: playerOne.isPlaying ? 'grid' : 'none' }}>
         {list.map((zone) => (
           <div
             className="battle-zone"
-            onClick={() => handleClick(zone.id)}
+            //onClick={() => handleClick(zone.id)}
             style={{ backgroundColor: zone.shipPlacedByPlayerOne ? 'black' : 'white' }}>
             <h6>{zone.id}</h6>
             <p>Battle Zone</p>
@@ -49,12 +48,12 @@ const BattleMap = ({list,playerOne, playerTwo, handleClick,handleShipPlacement, 
           </div>
         ))}
       </div>
-      <h1>PlayerTwo</h1>
-      <div className="battlemap">
+      
+      <div className="battlemap" style={{display: playerTwo.isPlaying ? 'grid' : 'none' }}>
         {list.map((zone) => (
           <div
             className="battle-zone"
-            onClick={() => handleClick(zone.id)}
+            //onClick={() => handleClick(zone.id)}
             style={{ backgroundColor: zone.shipPlacedByPlayerTwo ? 'black' : 'white' }}>
             <h6>{zone.id}</h6>
             <p>Battle Zone</p>
