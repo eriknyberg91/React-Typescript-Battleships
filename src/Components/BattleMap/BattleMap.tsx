@@ -8,20 +8,24 @@ interface Props {
   handleShipPlacement(id: number): void;
   changePlayer(): void;
   handlePlayerFire(id: number): void;
+  changeGameState(): void;
   playerOne: IPlayer;
   playerTwo: IPlayer;
+  gameIsPlaying: boolean;
 
 }
 
-const BattleMap = ({list,playerOne, playerTwo, handleShipPlacement, changePlayer, handlePlayerFire}: Props) => {
+const BattleMap = ({list,playerOne, playerTwo, gameIsPlaying,  handleShipPlacement, changePlayer, handlePlayerFire, changeGameState}: Props) => {
   
   return (
     <div className="battle-map-container">
       <div className="intro-container">
       <h2>Current Player: {playerOne.isPlaying ? playerOne.playerName : playerTwo.playerName}</h2>
+      
         <button onClick={() => changePlayer()}>Change Player</button>
+        <button onClick={() => changeGameState()}>Change game state</button>
       </div>
-      <div className="battlemap">
+      <div className="battlemap" style={{display: gameIsPlaying ? 'grid' : 'none' }}>
         {list.map((zone) => (
           <div className="battle-zone" onClick={() => {playerOne.shipsLeftToPlace > 0 || playerTwo.shipsLeftToPlace > 0 ? handleShipPlacement(zone.id) : handlePlayerFire(zone.id)}} >
             <h6>{zone.id}</h6>
@@ -62,7 +66,12 @@ const BattleMap = ({list,playerOne, playerTwo, handleShipPlacement, changePlayer
           </div>
         ))}
       </div>
+
+      <div className="end-game-container" style={{display: gameIsPlaying ? 'none' : 'block' }}>
+        <h1>Game has ended.</h1>
+      </div>
     </div>
+    
   );
 };
 

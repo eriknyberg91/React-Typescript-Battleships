@@ -39,6 +39,8 @@ function App() {
 
   const numberOfZones = 25;
 
+  const [gameIsPlaying, setGameIsPlaying] = useState<boolean>(true)
+
 const changePlayer = () => {
   setPlayerOne(prevPlayerOne => ({
     ...prevPlayerOne,
@@ -50,6 +52,10 @@ const changePlayer = () => {
     isPlaying: !prevPlayerTwo.isPlaying,
   }));
 };
+
+const changeGameState = () => {
+  setGameIsPlaying(!gameIsPlaying)
+}
 
 const handleShipPlacement = (id: number) => {
   
@@ -79,27 +85,27 @@ const handlePlayerFire = (id: number) => {
   setZoneList(
     zoneList.map((zone) => {
       if (zone.id == id && playerOne.isPlaying == true && zone.shipPlacedByPlayerTwo) {
-        //alert("Hit!")
+        increaseShotsFired()
         removeHealthFromPlayer()
         changePlayer()
         return  {...zone, successfullHitFromPlayerOne: zone.successfullHitFromPlayerOne = true}
       }
 
       else if (zone.id == id && playerOne.isPlaying == true && !zone.shipPlacedByPlayerTwo) {
-        //alert("Miss!")
+        increaseShotsFired()
         changePlayer()
         return  {...zone, failedHitFromPlayerOne: zone.failedHitFromPlayerOne = true}
       }
 
       else if (zone.id == id && playerTwo.isPlaying == true && zone.shipPlacedByPlayerOne) {
-        //alert("Hit!")
+        increaseShotsFired()
         removeHealthFromPlayer()
         changePlayer()
         return  {...zone, successfullHitFromPlayerTwo: zone.successfullHitFromPlayerTwo = true}
       }
 
       else if (zone.id == id && playerTwo.isPlaying == true && !zone.shipPlacedByPlayerOne) {
-        //alert("Miss!")
+        increaseShotsFired()
         changePlayer()
         return  {...zone, failedHitFromPlayerTwo: zone.failedHitFromPlayerTwo = true}
       }
@@ -130,7 +136,6 @@ const removeOneShipFromPlayer = () => {
 
   const removeHealthFromPlayer = () => {
     
-    
     if (playerOne.isPlaying == true) {
       setPlayerTwo(prevPlayerTwo => ({
         ...prevPlayerTwo,
@@ -146,10 +151,31 @@ const removeOneShipFromPlayer = () => {
     }
 
     if (playerOne.health <= 1 || playerTwo.health <= 1){
-      alert("Game should end.")
+      changeGameState()
     }
 
   };
+
+
+  const increaseShotsFired = () => {
+    if (playerOne.isPlaying == true) {
+
+      setPlayerOne(prevPlayerOne => ({
+        ...prevPlayerOne,
+        shotsFired: prevPlayerOne.shotsFired + 1
+      }));
+
+    }
+
+    else if (playerTwo.isPlaying == true) {
+
+      setPlayerTwo(prevPlayerTwo => ({
+        ...prevPlayerTwo,
+        shotsFired: prevPlayerTwo.shotsFired + 1
+      }));
+
+    } 
+  }
   
   const generateZoneList = Array.from({length: numberOfZones}, (_, index) => ({
     id: index + 1,
@@ -169,6 +195,8 @@ const removeOneShipFromPlayer = () => {
     <div className="App">
       <h1>BattleShips</h1>
       <BattleMap 
+      changeGameState={changeGameState}
+      gameIsPlaying={gameIsPlaying}
       handlePlayerFire={handlePlayerFire}
       playerOne={playerOne}
       playerTwo={playerTwo}
