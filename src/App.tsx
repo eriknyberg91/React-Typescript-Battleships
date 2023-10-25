@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import BattleZone from './Components/BattleZone/BattleZone';
 import BattleMap from './Components/BattleMap/BattleMap';
 import IBattleZone from './Classes/IBattleZone';
@@ -40,8 +40,10 @@ function App() {
   const numberOfZones = 25;
 
   const [gameIsPlaying, setGameIsPlaying] = useState<boolean>(true)
+  const [currentPlayer, setCurrentPlayer] = useState<IPlayer>(playerOne)
 
 const changePlayer = () => {
+  changeCurrentPlayer()
   setPlayerOne(prevPlayerOne => ({
     ...prevPlayerOne,
     isPlaying: !prevPlayerOne.isPlaying,
@@ -52,6 +54,16 @@ const changePlayer = () => {
     isPlaying: !prevPlayerTwo.isPlaying,
   }));
 };
+
+const changeCurrentPlayer = () => {
+  if (playerOne.isPlaying == true) {
+    setCurrentPlayer(playerTwo)
+  }
+
+  else if (playerTwo) {
+    setCurrentPlayer(playerOne)
+  }
+}
 
 const changeGameState = () => {
   setGameIsPlaying(!gameIsPlaying)
@@ -176,6 +188,8 @@ const removeOneShipFromPlayer = () => {
 
     } 
   }
+
+  
   
   const generateZoneList = Array.from({length: numberOfZones}, (_, index) => ({
     id: index + 1,
@@ -195,6 +209,8 @@ const removeOneShipFromPlayer = () => {
     <div className="App">
       <h1>BattleShips</h1>
       <BattleMap 
+      currentPlayer={currentPlayer}
+      changeCurrentPlayer={changeCurrentPlayer}
       changeGameState={changeGameState}
       gameIsPlaying={gameIsPlaying}
       handlePlayerFire={handlePlayerFire}
