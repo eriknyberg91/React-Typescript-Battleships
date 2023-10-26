@@ -8,13 +8,14 @@ function App() {
 
   //TODO : 
   //DONE  --- Place ships when shipcount > 0, move on to Fire phase 
-  //Use of current player instead of individual players?
-  //Re-render one battlemap rather than different ones
-  //Reduce health of player when ship gets hit, visual input
-  //End game when one player reaches 0 health
+  //??? Use of current player instead of individual players?
+  //??? Re-render one battlemap rather than different ones
+  //DONE ---Reduce health of player when ship gets hit, visual input
+  //DONE ---End game when one player reaches 0 health
   //Statistics
   //Reset Game
   //Styling
+  //Formating and readability
 
   
   const [playerOne, setPlayerOne] = useState<IPlayer>({
@@ -94,31 +95,58 @@ const handleShipPlacement = (id: number) => {
 }
 
 const handlePlayerFire = (id: number) => {
+
+  const targetedZone = zoneList.find(zone => zone.id == id)
+
+
   setZoneList(
     zoneList.map((zone) => {
       if (zone.id == id && playerOne.isPlaying == true && zone.shipPlacedByPlayerTwo) {
-        increaseShotsFired()
-        removeHealthFromPlayer()
-        changePlayer()
+        if (targetedZone?.successfullHitFromPlayerOne || targetedZone?.failedHitFromPlayerOne){
+          alert("Already clicked! Try another zone.")
+        }
+        else {
+          increaseShotsFired()
+          removeHealthFromPlayer()
+          changePlayer()
+        }
         return  {...zone, successfullHitFromPlayerOne: zone.successfullHitFromPlayerOne = true}
       }
 
       else if (zone.id == id && playerOne.isPlaying == true && !zone.shipPlacedByPlayerTwo) {
-        increaseShotsFired()
-        changePlayer()
+        if (targetedZone?.successfullHitFromPlayerOne || targetedZone?.failedHitFromPlayerOne){
+          alert("Already clicked! Try another zone.")
+        }
+        else {
+          increaseShotsFired()
+          removeHealthFromPlayer()
+          changePlayer()
+        }
+        
         return  {...zone, failedHitFromPlayerOne: zone.failedHitFromPlayerOne = true}
       }
 
       else if (zone.id == id && playerTwo.isPlaying == true && zone.shipPlacedByPlayerOne) {
-        increaseShotsFired()
-        removeHealthFromPlayer()
-        changePlayer()
+        if (targetedZone?.successfullHitFromPlayerTwo || targetedZone?.failedHitFromPlayerTwo){
+          alert("Already clicked! Try another zone.")
+        }
+        else {
+          increaseShotsFired()
+          removeHealthFromPlayer()
+          changePlayer()
+        }
         return  {...zone, successfullHitFromPlayerTwo: zone.successfullHitFromPlayerTwo = true}
       }
 
       else if (zone.id == id && playerTwo.isPlaying == true && !zone.shipPlacedByPlayerOne) {
-        increaseShotsFired()
-        changePlayer()
+        if (targetedZone?.successfullHitFromPlayerTwo || targetedZone?.failedHitFromPlayerTwo){
+          alert("Already clicked! Try another zone.")
+        }
+        else {
+          increaseShotsFired()
+          removeHealthFromPlayer()
+          changePlayer()
+        }
         return  {...zone, failedHitFromPlayerTwo: zone.failedHitFromPlayerTwo = true}
       }
       
@@ -126,6 +154,8 @@ const handlePlayerFire = (id: number) => {
 
     }))
 }
+
+
 
 const removeOneShipFromPlayer = () => {
   

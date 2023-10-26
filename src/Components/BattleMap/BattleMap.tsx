@@ -19,15 +19,15 @@ interface Props {
 const BattleMap = ({list,playerOne, playerTwo, gameIsPlaying, currentPlayer,  handleShipPlacement, changePlayer, handlePlayerFire, changeGameState, changeCurrentPlayer}: Props) => {
   
   return (
-    <div className="battle-map-container">
-      <div className="intro-container">
-      <h2>Current Player: {playerOne.isPlaying ? playerOne.playerName : playerTwo.playerName}</h2>
-      <h2>Current Player Variable: {currentPlayer.playerName}</h2>
-        <button onClick={() => changePlayer()}>Change Player</button>
-        <button onClick={() => changeGameState()}>Change game state</button>
-      </div>
-      
-      <div className="battlemap" style={{display: playerOne.isPlaying ? 'grid' : 'none' }}>
+    <div className="battle-map-container" >
+          <div className="battle-maps-container"style={{display: gameIsPlaying ? 'block' : 'none'}}>
+          <div className="intro-container">
+            <h2>Current Player: {playerOne.isPlaying ? playerOne.playerName : playerTwo.playerName}</h2>
+            <h2>Current Player Variable: {currentPlayer.playerName}</h2>
+            <button onClick={() => changePlayer()}>Change Player</button>
+            <button onClick={() => changeGameState()}>Change game state</button>
+          </div>
+          <div className="battlemap" style={{display: playerOne.isPlaying ? 'grid' : 'none' }}>
         {list.map((zone) => (
           <div className="battle-zone" onClick={() => {playerOne.shipsLeftToPlace > 0 || playerTwo.shipsLeftToPlace > 0 ? handleShipPlacement(zone.id) : handlePlayerFire(zone.id)}} >
             <h6>{zone.id}</h6>
@@ -71,15 +71,14 @@ const BattleMap = ({list,playerOne, playerTwo, gameIsPlaying, currentPlayer,  ha
           </div>
         ))}
       </div>
- 
+          </div>
       
-      
-
 
       <div className="end-game-container" style={{display: gameIsPlaying ? 'none' : 'block' }}>
         <h1>Game has ended.</h1>
-      </div>
+      </div>  
     </div>
+    
     
   );
 };
