@@ -6,12 +6,15 @@ import IPlayer from './Classes/IPlayer';
 
 function App() {
 
+  
+
   //TODO : 
   //DONE  --- Place ships when shipcount > 0, move on to Fire phase 
   //??? Use of current player instead of individual players?
   //??? Re-render one battlemap rather than different ones
   //DONE ---Reduce health of player when ship gets hit, visual input
   //DONE ---End game when one player reaches 0 health
+  //Better way to handle duplicate clicks on zone rather than alert
   //Statistics
   //Reset Game
   //Styling
@@ -38,6 +41,14 @@ function App() {
     isPlaying: false
   });
 
+  //Updates game state based on changes in health of players.
+  useEffect(() => {
+    if (playerOne.health <= 0 || playerTwo.health <= 0) {
+      changeGameState();
+    }
+
+  }, [playerOne.health, playerTwo.health])
+
   const numberOfZones = 25;
 
   const [gameIsPlaying, setGameIsPlaying] = useState<boolean>(true)
@@ -63,6 +74,10 @@ const changeCurrentPlayer = () => {
 
   else if (playerTwo) {
     setCurrentPlayer(playerOne)
+  }
+
+  if (playerOne.health == 0 || playerTwo.health == 0){
+    changeGameState()
   }
 }
 
@@ -118,8 +133,6 @@ const handlePlayerFire = (id: number) => {
           alert("Already clicked! Try another zone.")
         }
         else {
-          increaseShotsFired()
-          removeHealthFromPlayer()
           changePlayer()
         }
         
@@ -134,21 +147,22 @@ const handlePlayerFire = (id: number) => {
           increaseShotsFired()
           removeHealthFromPlayer()
           changePlayer()
+          
         }
         return  {...zone, successfullHitFromPlayerTwo: zone.successfullHitFromPlayerTwo = true}
       }
 
       else if (zone.id == id && playerTwo.isPlaying == true && !zone.shipPlacedByPlayerOne) {
         if (targetedZone?.successfullHitFromPlayerTwo || targetedZone?.failedHitFromPlayerTwo){
-          alert("Already clicked! Try another zone.")
+          alert("Already clicked! Try another zone.") 
         }
         else {
-          increaseShotsFired()
-          removeHealthFromPlayer()
           changePlayer()
         }
         return  {...zone, failedHitFromPlayerTwo: zone.failedHitFromPlayerTwo = true}
       }
+
+      
       
       return zone;
 
@@ -192,11 +206,10 @@ const removeOneShipFromPlayer = () => {
       }));
     }
 
-    if (playerOne.health <= 1 || playerTwo.health <= 1){
-      changeGameState()
-    }
 
   };
+
+
 
 
   const increaseShotsFired = () => {

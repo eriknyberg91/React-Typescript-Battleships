@@ -76,6 +76,7 @@ const BattleMap = ({list,playerOne, playerTwo, gameIsPlaying, currentPlayer,  ha
 
       <div className="end-game-container" style={{display: gameIsPlaying ? 'none' : 'block' }}>
         <h1>Game has ended.</h1>
+        <p>{`Player One Shots Fired: ${playerOne.shotsFired}`}</p>
       </div>  
     </div>
     
