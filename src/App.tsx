@@ -3,6 +3,7 @@ import BattleZone from './Components/BattleZone/BattleZone';
 import BattleMap from './Components/BattleMap/BattleMap';
 import IBattleZone from './Classes/IBattleZone';
 import IPlayer from './Classes/IPlayer';
+import Scoreboard from './Components/Scoreboard/Scoreboard';
 
 function App() {
 
@@ -15,7 +16,7 @@ function App() {
   //DONE ---Reduce health of player when ship gets hit, visual input
   //DONE ---End game when one player reaches 0 health
   //Better way to handle duplicate clicks on zone rather than alert
-  //Statistics
+  //Statistics && SCOREBOARD!! (Ship Counter, Green for alive Red for hit? on Top?)
   //Reset Game
   //Styling
   //Formating and readability
@@ -250,7 +251,7 @@ const removeOneShipFromPlayer = () => {
   return (
    
     <div className="App">
-      <h1>BattleShips</h1>
+      <Scoreboard firstPlayer={playerOne} secondPlayer={playerTwo}/>
       <BattleMap 
       currentPlayer={currentPlayer}
       changeCurrentPlayer={changeCurrentPlayer}
