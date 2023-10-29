@@ -7,7 +7,6 @@ import Scoreboard from './Components/Scoreboard/Scoreboard';
 
 function App() {
 
-  
 
   //TODO : 
   //DONE  --- Place ships when shipcount > 0, move on to Fire phase 
@@ -15,9 +14,16 @@ function App() {
   //??? Re-render one battlemap rather than different ones
   //DONE ---Reduce health of player when ship gets hit, visual input
   //DONE ---End game when one player reaches 0 health
+  //DONE --- Add victory to winning player
+
+  
+  
   //Better way to handle duplicate clicks on zone rather than alert
   //Statistics && SCOREBOARD!! (Ship Counter, Green for alive Red for hit? on Top?)
-  //Reset Game
+  //Use BattleZone to render?
+  
+  // !!! Reset Game !!!
+  
   //Styling
   //Formating and readability
 
@@ -42,21 +48,33 @@ function App() {
     isPlaying: false
   });
 
+  const numberOfZones = 25;
+  const [gameIsPlaying, setGameIsPlaying] = useState<boolean>(true)
+  const generateZoneList = Array.from({length: numberOfZones}, (_, index) => ({
+    id: index + 1,
+    shipPlacedByPlayerOne: false,
+    shipPlacedByPlayerTwo: false,
+    successfullHitFromPlayerOne: false,
+    successfullHitFromPlayerTwo: false,
+    failedHitFromPlayerOne: false,
+    failedHitFromPlayerTwo: false
+    })    
+  )
+  const [zoneList, setZoneList] = useState<IBattleZone[]>(generateZoneList)
+
+  
+
   //Updates game state based on changes in health of players.
   useEffect(() => {
-    if (playerOne.health <= 0 || playerTwo.health <= 0) {
-      changeGameState();
+    if (playerOne.health == 0 || playerTwo.health == 0) {
+      increasePlayerVictories()
     }
+  }, [playerOne.health, playerTwo.health, playerOne.numberOfVictories, playerTwo.numberOfVictories])
 
-  }, [playerOne.health, playerTwo.health])
-
-  const numberOfZones = 25;
-
-  const [gameIsPlaying, setGameIsPlaying] = useState<boolean>(true)
-  const [currentPlayer, setCurrentPlayer] = useState<IPlayer>(playerOne)
+  
 
 const changePlayer = () => {
-  changeCurrentPlayer()
+  
   setPlayerOne(prevPlayerOne => ({
     ...prevPlayerOne,
     isPlaying: !prevPlayerOne.isPlaying,
@@ -68,23 +86,10 @@ const changePlayer = () => {
   }));
 };
 
-const changeCurrentPlayer = () => {
-  if (playerOne.isPlaying == true) {
-    setCurrentPlayer(playerTwo)
-  }
-
-  else if (playerTwo) {
-    setCurrentPlayer(playerOne)
-  }
-
-  if (playerOne.health == 0 || playerTwo.health == 0){
-    changeGameState()
-  }
-}
 
 const changeGameState = () => {
-  setGameIsPlaying(!gameIsPlaying)
-}
+  setGameIsPlaying(prevGameIsPlaying => !prevGameIsPlaying);
+};
 
 const handleShipPlacement = (id: number) => {
   
@@ -134,9 +139,9 @@ const handlePlayerFire = (id: number) => {
           alert("Already clicked! Try another zone.")
         }
         else {
+          increaseShotsFired()
           changePlayer()
         }
-        
         return  {...zone, failedHitFromPlayerOne: zone.failedHitFromPlayerOne = true}
       }
 
@@ -148,7 +153,6 @@ const handlePlayerFire = (id: number) => {
           increaseShotsFired()
           removeHealthFromPlayer()
           changePlayer()
-          
         }
         return  {...zone, successfullHitFromPlayerTwo: zone.successfullHitFromPlayerTwo = true}
       }
@@ -158,19 +162,16 @@ const handlePlayerFire = (id: number) => {
           alert("Already clicked! Try another zone.") 
         }
         else {
+          increaseShotsFired()
           changePlayer()
         }
         return  {...zone, failedHitFromPlayerTwo: zone.failedHitFromPlayerTwo = true}
       }
 
-      
-      
       return zone;
 
     }))
 }
-
-
 
 const removeOneShipFromPlayer = () => {
   
@@ -179,7 +180,6 @@ const removeOneShipFromPlayer = () => {
       ...prevPlayerOne,
       shipsLeftToPlace: prevPlayerOne.shipsLeftToPlace - 1
     }));
-    console.log(playerOne.shipsLeftToPlace)
   }
 
   else if (playerTwo.isPlaying == true) {
@@ -188,8 +188,8 @@ const removeOneShipFromPlayer = () => {
       shipsLeftToPlace: prevPlayerTwo.shipsLeftToPlace - 1
     }));
   };
-    console.log(playerTwo.shipsLeftToPlace)
-  }
+  
+}
 
   const removeHealthFromPlayer = () => {
     
@@ -206,12 +206,8 @@ const removeOneShipFromPlayer = () => {
         health: prevPlayerOne.health - 1
       }));
     }
-
-
+    increasePlayerVictories()
   };
-
-
-
 
   const increaseShotsFired = () => {
     if (playerOne.isPlaying == true) {
@@ -233,28 +229,87 @@ const removeOneShipFromPlayer = () => {
     } 
   }
 
-  
-  
-  const generateZoneList = Array.from({length: numberOfZones}, (_, index) => ({
-    id: index + 1,
-    shipPlacedByPlayerOne: false,
-    shipPlacedByPlayerTwo: false,
-    successfullHitFromPlayerOne: false,
-    successfullHitFromPlayerTwo: false,
-    failedHitFromPlayerOne: false,
-    failedHitFromPlayerTwo: false
-    })    
-  )
+  const increasePlayerVictories = () => {
+    if (playerOne.health == 0 && gameIsPlaying) {
+      setPlayerTwo(prevPlayerTwo => ({
+        ...prevPlayerTwo,
+        numberOfVictories: prevPlayerTwo.numberOfVictories + 1
+      }));
+      changeGameState()
+    }
 
-  const [zoneList, setZoneList] = useState<IBattleZone[]>(generateZoneList)
+    else if (playerTwo.health == 0 && gameIsPlaying) {
+      setPlayerOne(prevPlayerOne => ({
+        ...prevPlayerOne,
+        numberOfVictories: prevPlayerOne.numberOfVictories + 1
+      }));
+      changeGameState()
+    }
+  }
+  //Använd för träffsäkerhet, prop till BattleMap?
+  const calculateAccuracy = () => {
+    const playerOneSuccessfulHits = zoneList.filter(x => x.successfullHitFromPlayerOne).length;
+    const playerTwoSuccessfulHits = zoneList.filter(x => x.successfullHitFromPlayerTwo).length;
+
+    const playerOneAccuracy = (playerOneSuccessfulHits / playerOne.shotsFired) * 100;
+    const playerTwoAccuracy = (playerTwoSuccessfulHits / playerTwo.shotsFired) * 100;
+
+    return {
+      //Returnerar procent avrundat till två decimaler
+      playerOneAccuracy: playerOneAccuracy.toFixed(2),
+      playerTwoAccuracy: playerTwoAccuracy.toFixed(2)
+    }
+  }
+
+  const resetGame = () => {
+    const resetPlayerOne = {
+      ...playerOne,
+      id: playerOne.id,
+      playerName: playerOne.playerName,
+      shotsFired: 0,
+      shipsLeftToPlace: 5,
+      numberOfVictories: playerOne.numberOfVictories,
+      health: 5,
+      isPlaying: true
+    }
+    const resetPlayerTwo = {
+      ...playerTwo,
+      id: playerTwo.id,
+      playerName: playerTwo.playerName,
+      shotsFired: 0,
+      shipsLeftToPlace: 5,
+      numberOfVictories: playerTwo.numberOfVictories,
+      health: 5,
+      isPlaying: false
+    }
+    const resetZoneList = zoneList.map((zone) => {
+      return {
+        ...zone,
+        shipPlacedByPlayerOne: false,
+        shipPlacedByPlayerTwo: false,
+        successfullHitFromPlayerOne: false,
+        successfullHitFromPlayerTwo: false,
+        failedHitFromPlayerOne: false,
+        failedHitFromPlayerTwo: false
+      }
+    })
+    setPlayerOne(resetPlayerOne)
+    setPlayerTwo(resetPlayerTwo)
+    setZoneList(resetZoneList)
+    changeGameState()
+    
+  }
+
+  
+  
+  
 
   return (
    
     <div className="App">
       <Scoreboard firstPlayer={playerOne} secondPlayer={playerTwo}/>
       <BattleMap 
-      currentPlayer={currentPlayer}
-      changeCurrentPlayer={changeCurrentPlayer}
+      resetGame={resetGame}
       changeGameState={changeGameState}
       gameIsPlaying={gameIsPlaying}
       handlePlayerFire={handlePlayerFire}
