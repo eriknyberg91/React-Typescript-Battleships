@@ -15,14 +15,14 @@ function App() {
   //DONE ---Reduce health of player when ship gets hit, visual input
   //DONE ---End game when one player reaches 0 health
   //DONE --- Add victory to winning player
-
+  //DONE Reset Game
   
   
   //Better way to handle duplicate clicks on zone rather than alert
-  //Statistics && SCOREBOARD!! (Ship Counter, Green for alive Red for hit? on Top?)
+  //DONE ??? More stats, health styling - Statistics && SCOREBOARD!! (Ship Counter, Green for alive Red for hit? on Top?)
   //Use BattleZone to render?
   
-  // !!! Reset Game !!!
+  
   
   //Styling
   //Formating and readability
@@ -246,19 +246,20 @@ const removeOneShipFromPlayer = () => {
       changeGameState()
     }
   }
-  //Använd för träffsäkerhet, prop till BattleMap?
-  const calculateAccuracy = () => {
-    const playerOneSuccessfulHits = zoneList.filter(x => x.successfullHitFromPlayerOne).length;
-    const playerTwoSuccessfulHits = zoneList.filter(x => x.successfullHitFromPlayerTwo).length;
+  
+  const calculateAccuracy = (player: IPlayer) => {
+    const succesfulHitsOnZone = zoneList.filter((zone) => {
+      if (player.id == 1) {
+        return zone.successfullHitFromPlayerOne
+      }
+      else if (player.id == 2) {
+        return zone.successfullHitFromPlayerTwo
+      }
+    }).length
 
-    const playerOneAccuracy = (playerOneSuccessfulHits / playerOne.shotsFired) * 100;
-    const playerTwoAccuracy = (playerTwoSuccessfulHits / playerTwo.shotsFired) * 100;
+    const accuracy = (succesfulHitsOnZone / player.shotsFired) * 100;
 
-    return {
-      //Returnerar procent avrundat till två decimaler
-      playerOneAccuracy: playerOneAccuracy.toFixed(2),
-      playerTwoAccuracy: playerTwoAccuracy.toFixed(2)
-    }
+    return accuracy.toFixed(2);
   }
 
   const resetGame = () => {
@@ -309,6 +310,7 @@ const removeOneShipFromPlayer = () => {
     <div className="App">
       <Scoreboard firstPlayer={playerOne} secondPlayer={playerTwo}/>
       <BattleMap 
+      calculateAccuracy={calculateAccuracy}
       resetGame={resetGame}
       changeGameState={changeGameState}
       gameIsPlaying={gameIsPlaying}

@@ -7,12 +7,21 @@ interface Props {
 }
 
 const Scoreboard = ({firstPlayer, secondPlayer} : Props) => {
-  return (
+  
+    const healthIcons = (health: number) => {
+        const icons = [];
+        for (let i = 0;  i < health; i++) {
+            icons.push(<button key={i}>HP</button>);
+        }
+        return icons;
+    }
+  
+    return (
     <div className='scoreboard-container'>
         <div className="first-player-container">
             <h3>{firstPlayer.playerName}</h3>
             <p>Wins {`(${firstPlayer.numberOfVictories})`}</p>
-            <p>Health {firstPlayer.health}</p>
+            <p>Health {healthIcons(firstPlayer.health)}</p>
         </div>
 
         <div className="title-and-gamephase">
@@ -22,7 +31,7 @@ const Scoreboard = ({firstPlayer, secondPlayer} : Props) => {
         <div className="second-player-container">
             <h3>{secondPlayer.playerName}</h3>
             <p>Wins {`(${secondPlayer.numberOfVictories})`}</p>
-            <p>Health {secondPlayer.health}</p>
+            <p>Health {healthIcons(secondPlayer.health)}</p>
         </div>
     </div>
   )
