@@ -29,7 +29,7 @@ const BattleMap = ({showShips, handleShips, list,playerOne, playerTwo, gameIsPla
           
             <div className="intro-container">
               <h2>Current Player: {playerOne.isPlaying ? playerOne.playerName : playerTwo.playerName}</h2>
-              <button onClick={() => handleShips()}>Show ships</button>
+              
             </div>
           
             <div className="battlemap" style={{ display: playerOne.isPlaying ? 'grid' : 'none' }}>
@@ -78,6 +78,7 @@ const BattleMap = ({showShips, handleShips, list,playerOne, playerTwo, gameIsPla
 
       <div className="end-game-container" style={{display: gameIsPlaying ? 'none' : 'flex' }}>
         <h1>Game has ended.</h1>
+        <h2>Winning Player: {playerOne.health == 0 ? playerTwo.playerName : playerOne.playerName}</h2>
         <h3>Shots fired:</h3>
         <p>{`PlayerOne ---  ${playerOne.shotsFired} | ${playerOne.shotsFired} --- PlayerTwo`}</p>
         <h3>Accuracy:</h3>

@@ -4,6 +4,14 @@
     font-weight: bold;
     cursor: pointer;
     background-color: #c0c0c0;
-    width: 200px;
-    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 2px;
+    transition: background-color 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+}
+
+.battle-zone-container:hover {
+    background-color: #a9a9a9; 
 }

@@ -1,3 +1,7 @@
+.battle-map-container {
+    font-family: 'Poppins', sans-serif;
+}
+
 .battle-zone{
     border: 1px solid black;
     display: flex;
@@ -13,14 +17,6 @@
     margin: auto;
 }
 
-.hit-or-miss {
-    color: white;
-}
-
-.BattleZone {
-    background-color: red;
-}
-
 .intro-container {
     display: flex;
     justify-content: center;
@@ -28,10 +24,8 @@
     padding: 20px;
 }
 
-.shipboard-info {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.intro-container button {
+    cursor: pointer;
 }
 
 .end-game-container {

@@ -1,6 +1,57 @@
-.scoreboard-container {
+/* .scoreboard-container {
     display: flex;
     justify-content: space-between;
     width: 80%;
     margin: auto;
-}
+} */
+
+.scoreboard-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #f5f5f5;
+    padding: 20px;
+    border: 1px solid #ccc;
+    font-family: 'Poppins', sans-serif;
+    width: 100%;
+  }
+  
+  .first-player-container,
+  .second-player-container,
+  .title-and-gamephase {
+    flex: 1;
+    text-align: center;
+  }
+  
+  .first-player-container,
+  .second-player-container {
+    margin: 0 10px;
+  }
+  
+  .health-button {
+    margin: 5px;
+    padding: 5px 10px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    width: 25px;
+    height: 25px;
+  }
+
+  .health-button, p {
+   font-size: 25px;
+  }
+  
+  button:hover {
+    background-color: #45a049;
+  }
+  
+  h1 {
+    font-size: 36px;
+    margin: 0;
+  }
+
+  
+
+  
