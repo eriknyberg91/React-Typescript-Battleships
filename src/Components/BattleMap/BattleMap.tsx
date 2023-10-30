@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
 import IBattleZone from '../../Classes/IBattleZone';
 import './BattleMap.css';
 import IPlayer from '../../Classes/IPlayer';
 import BattleZone from '../BattleZone/BattleZone';
+import { useState } from 'react';
 
 interface Props {
   list: IBattleZone[];
@@ -15,39 +15,25 @@ interface Props {
   playerOne: IPlayer;
   playerTwo: IPlayer;
   gameIsPlaying: boolean;
+  showShips: boolean;
+  handleShips(): void;
 }
 
-const BattleMap = ({list,playerOne, playerTwo, gameIsPlaying, handleShipPlacement, changePlayer, handlePlayerFire, changeGameState, resetGame, calculateAccuracy}: Props) => {
+const BattleMap = ({showShips, handleShips, list,playerOne, playerTwo, gameIsPlaying, handleShipPlacement, changePlayer, handlePlayerFire, changeGameState, resetGame, calculateAccuracy}: Props) => {
   
+  
+
   return (
     <div className="battle-map-container" >
           <div className="battle-maps-container"style={{display: gameIsPlaying ? 'block' : 'none'}}>
-          <div className="intro-container">
-            <h2>Current Player: {playerOne.isPlaying ? playerOne.playerName : playerTwo.playerName}</h2>
-            <button onClick={() => changePlayer()}>Change Player</button>
-            <button onClick={() => changeGameState()}>Change game state</button>
-          </div>
-          <div className="battlemap" style={{ display: playerOne.isPlaying ? 'grid' : 'none' }}>
-              {list.map((zone) => (
-                  <BattleZone 
-                  playerOne={playerOne}
-                  playerTwo={playerTwo}
-                  key={zone.id}
-                  id={zone.id}
-                  shipPlacedByPlayerOne={zone.shipPlacedByPlayerOne}
-                  shipPlacedByPlayerTwo={zone.shipPlacedByPlayerTwo}
-                  successfullHitFromPlayerOne={zone.successfullHitFromPlayerOne}
-                  successfullHitFromPlayerTwo={zone.successfullHitFromPlayerTwo}
-                  failedHitFromPlayerOne={zone.failedHitFromPlayerOne}
-                  failedHitFromPlayerTwo={zone.failedHitFromPlayerTwo}
-                  handleShipPlacement={handleShipPlacement}
-                  handlePlayerFire={handlePlayerFire}
-                  playerOneShipsLeftToPlace={playerOne.shipsLeftToPlace}
-                  playerTwoShipsLeftToPlace={playerTwo.shipsLeftToPlace} />
-                  ))}
-          </div>
-          <div className="battlemap" style={{ display: playerTwo.isPlaying ? 'grid' : 'none' }}>
-              {list.map((zone) => (
+          
+            <div className="intro-container">
+              <h2>Current Player: {playerOne.isPlaying ? playerOne.playerName : playerTwo.playerName}</h2>
+              <button onClick={() => handleShips()}>Show ships</button>
+            </div>
+          
+            <div className="battlemap" style={{ display: playerOne.isPlaying ? 'grid' : 'none' }}>
+                {list.map((zone) => (
                     <BattleZone 
                     playerOne={playerOne}
                     playerTwo={playerTwo}
@@ -62,44 +48,42 @@ const BattleMap = ({list,playerOne, playerTwo, gameIsPlaying, handleShipPlacemen
                     handleShipPlacement={handleShipPlacement}
                     handlePlayerFire={handlePlayerFire}
                     playerOneShipsLeftToPlace={playerOne.shipsLeftToPlace}
-                    playerTwoShipsLeftToPlace={playerTwo.shipsLeftToPlace} />
-                  ))}
-          </div>
+                    playerTwoShipsLeftToPlace={playerTwo.shipsLeftToPlace}
+                    showShips={showShips} />
+                    ))}
+            </div>
           
-      <h1>Shipboard of {playerOne.isPlaying ? playerOne.playerName : playerTwo.playerName}</h1>
-      <div className="battlemap" style={{display: playerOne.isPlaying ? 'grid' : 'none' }}>
-        {list.map((zone) => (
-          <div className="battle-zone">
-            <h6>{zone.id}</h6>
-            <p>Battle Zone</p>
-            <p style={{color: zone.shipPlacedByPlayerOne ? 'green' : 'white'}}>Ship Placed</p>
-
-          </div>
-        ))}
+            <div className="battlemap" style={{ display: playerTwo.isPlaying ? 'grid' : 'none' }}>
+                {list.map((zone) => (
+                      <BattleZone 
+                      playerOne={playerOne}
+                      playerTwo={playerTwo}
+                      key={zone.id}
+                      id={zone.id}
+                      shipPlacedByPlayerOne={zone.shipPlacedByPlayerOne}
+                      shipPlacedByPlayerTwo={zone.shipPlacedByPlayerTwo}
+                      successfullHitFromPlayerOne={zone.successfullHitFromPlayerOne}
+                      successfullHitFromPlayerTwo={zone.successfullHitFromPlayerTwo}
+                      failedHitFromPlayerOne={zone.failedHitFromPlayerOne}
+                      failedHitFromPlayerTwo={zone.failedHitFromPlayerTwo}
+                      handleShipPlacement={handleShipPlacement}
+                      handlePlayerFire={handlePlayerFire}
+                      playerOneShipsLeftToPlace={playerOne.shipsLeftToPlace}
+                      playerTwoShipsLeftToPlace={playerTwo.shipsLeftToPlace}
+                      showShips={showShips} />
+                    ))}
+              </div>
       </div>
-      <div className="battlemap" style={{display: playerTwo.isPlaying ? 'grid' : 'none' }}>
-        {list.map((zone) => (
-          <div className="battle-zone" >
-            <h6>{zone.id}</h6>
-            <p>Battle Zone</p>
-            <p style={{color: zone.shipPlacedByPlayerTwo ? 'green' : 'white'}}>Ship Placed</p>
-
-          </div>
-        ))}
-      </div>
-          </div>
       
 
-      <div className="end-game-container" style={{display: gameIsPlaying ? 'none' : 'block' }}>
+      <div className="end-game-container" style={{display: gameIsPlaying ? 'none' : 'flex' }}>
         <h1>Game has ended.</h1>
-        <p>{`Player One Shots Fired: ${playerOne.shotsFired}`}</p>
-        <p>{`Player Two Shots Fired: ${playerTwo.shotsFired}`}</p>
-        <p>{`Player One Accuracy: ${calculateAccuracy(playerOne)}%`}</p>
-        <p>{`Player Two Accuracy: ${calculateAccuracy(playerTwo)}%`}</p>
-
-        <button onClick={() => changeGameState()}>Game state</button>
-        <button onClick={() => resetGame()}>Reset</button>
-        <button>Statistics</button>
+        <h3>Shots fired:</h3>
+        <p>{`PlayerOne ---  ${playerOne.shotsFired} | ${playerOne.shotsFired} --- PlayerTwo`}</p>
+        <h3>Accuracy:</h3>
+        <p>{`Player One --- ${calculateAccuracy(playerOne)}% | ${calculateAccuracy(playerTwo)}% --- PlayerTwo`}</p>
+        
+        <button className='play-again-button' onClick={() => resetGame()}>Play again!</button>
       </div>  
     </div>
     

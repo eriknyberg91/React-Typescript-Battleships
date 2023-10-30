@@ -25,7 +25,7 @@ const Scoreboard = ({firstPlayer, secondPlayer} : Props) => {
         </div>
 
         <div className="title-and-gamephase">
-            <h3>Battleships</h3>
+            <h1>Battleships</h1>
         </div>
 
         <div className="second-player-container">

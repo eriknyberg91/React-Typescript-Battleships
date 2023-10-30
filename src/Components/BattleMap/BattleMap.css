@@ -9,9 +9,40 @@
     grid-template-rows: repeat(5, 1fr);
     grid-column-gap: 0px;
     grid-row-gap: 0px;
+    width: 1000px;
+    margin: auto;
 }
 
 .hit-or-miss {
     color: white;
 }
 
+.BattleZone {
+    background-color: red;
+}
+
+.intro-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.shipboard-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.end-game-container {
+    display: flex;
+    width: 80%;
+    margin: auto;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.play-again-button {
+    font-size: 55px;
+}

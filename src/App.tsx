@@ -1,16 +1,15 @@
-import React, { ReactNode, useEffect, useState } from 'react';
-import BattleZone from './Components/BattleZone/BattleZone';
+import React, { useEffect, useState } from 'react';
 import BattleMap from './Components/BattleMap/BattleMap';
 import IBattleZone from './Classes/IBattleZone';
 import IPlayer from './Classes/IPlayer';
 import Scoreboard from './Components/Scoreboard/Scoreboard';
+import './App.css'
 
 function App() {
 
 
   //TODO : 
   //DONE  --- Place ships when shipcount > 0, move on to Fire phase 
-  //??? Use of current player instead of individual players?
   //??? Re-render one battlemap rather than different ones
   //DONE ---Reduce health of player when ship gets hit, visual input
   //DONE ---End game when one player reaches 0 health
@@ -19,11 +18,14 @@ function App() {
   
   
   //Better way to handle duplicate clicks on zone rather than alert
+  //Name of classes (IBattleZone, IPlayer) ??? 
+  
+  
   //DONE ??? More stats, health styling - Statistics && SCOREBOARD!! (Ship Counter, Green for alive Red for hit? on Top?)
-  //Use BattleZone to render?
+  //DONE Use BattleZone to render?
   
   
-  
+  //TODO: Shorten if-statements?
   //Styling
   //Formating and readability
 
@@ -48,31 +50,38 @@ function App() {
     isPlaying: false
   });
 
+  //Variabel för att bestämma hur många BattleZones som genereras
   const numberOfZones = 25;
+  //State-Variabel för att kontrollera vilken content som visas i BattleMap
   const [gameIsPlaying, setGameIsPlaying] = useState<boolean>(true)
-  const generateZoneList = Array.from({length: numberOfZones}, (_, index) => ({
-    id: index + 1,
-    shipPlacedByPlayerOne: false,
-    shipPlacedByPlayerTwo: false,
-    successfullHitFromPlayerOne: false,
-    successfullHitFromPlayerTwo: false,
-    failedHitFromPlayerOne: false,
-    failedHitFromPlayerTwo: false
-    })    
-  )
-  const [zoneList, setZoneList] = useState<IBattleZone[]>(generateZoneList)
+  //State-Variabel för att generera en lista med antal BattleZones som beror på variabeln numberOfZOnes
+  const [zoneList, setZoneList] = useState<IBattleZone[]>(() => {
+    return Array.from({ length: numberOfZones }, (_, index) => ({
+      id: index + 1,
+      shipPlacedByPlayerOne: false,
+      shipPlacedByPlayerTwo: false,
+      successfullHitFromPlayerOne: false,
+      successfullHitFromPlayerTwo: false,
+      failedHitFromPlayerOne: false,
+      failedHitFromPlayerTwo: false
+    }));
+  });
 
+  const [showShips, setShowShips] = useState<boolean>(true)
   
+  const handleShips = () => {
+    setShowShips(!showShips)
+  }
 
-  //Updates game state based on changes in health of players.
+  //När spelares hälsa når 0 körs kod för att hantera detta direkt när en spelare förlorar en hälsa och hamnar på 0.
   useEffect(() => {
     if (playerOne.health == 0 || playerTwo.health == 0) {
       increasePlayerVictories()
     }
-  }, [playerOne.health, playerTwo.health, playerOne.numberOfVictories, playerTwo.numberOfVictories])
+  }, [playerOne.health, playerTwo.health])
 
   
-
+//Funktion för att ändra variabeln isPlaying på varje spelare.
 const changePlayer = () => {
   
   setPlayerOne(prevPlayerOne => ({
@@ -86,20 +95,15 @@ const changePlayer = () => {
   }));
 };
 
-
+//Funktion för att ändra variabeln gameIsPlaying som används för att bestämma vad som ska visas i BattleMap.
 const changeGameState = () => {
   setGameIsPlaying(prevGameIsPlaying => !prevGameIsPlaying);
 };
 
+
+//Funktion för att hantera spelares placering av skepp.
 const handleShipPlacement = (id: number) => {
   
-  if(playerOne.shipsLeftToPlace === 1 && playerOne.isPlaying) {
-    changePlayer()
-  }
-  else if (playerTwo.shipsLeftToPlace === 1  && playerTwo.isPlaying){
-    changePlayer()
-  }
-  //TODO: Shorten if-statements?
   setZoneList(
     zoneList.map((zone) => {
       if (zone.id == id && playerOne.isPlaying == true && playerOne.shipsLeftToPlace > 0 && zone.shipPlacedByPlayerOne == false) {
@@ -113,11 +117,20 @@ const handleShipPlacement = (id: number) => {
       return zone;
 
     }))
+
+    if(playerOne.shipsLeftToPlace === 1 && playerOne.isPlaying) {
+      changePlayer()
+    }
+    else if (playerTwo.shipsLeftToPlace === 1  && playerTwo.isPlaying){
+      setShowShips(false);
+      changePlayer()
+    }
 }
 
 const handlePlayerFire = (id: number) => {
-
+  //Variabel för enskild zone som används för att kolla om nuvarande spelare har tryckt på zonen innan
   const targetedZone = zoneList.find(zone => zone.id == id)
+  
 
 
   setZoneList(
@@ -129,7 +142,9 @@ const handlePlayerFire = (id: number) => {
         else {
           increaseShotsFired()
           removeHealthFromPlayer()
-          changePlayer()
+          setTimeout(() => {
+            changePlayer();
+          }, 1000);
         }
         return  {...zone, successfullHitFromPlayerOne: zone.successfullHitFromPlayerOne = true}
       }
@@ -140,7 +155,9 @@ const handlePlayerFire = (id: number) => {
         }
         else {
           increaseShotsFired()
-          changePlayer()
+          setTimeout(() => {
+            changePlayer();
+          }, 1000);
         }
         return  {...zone, failedHitFromPlayerOne: zone.failedHitFromPlayerOne = true}
       }
@@ -152,7 +169,9 @@ const handlePlayerFire = (id: number) => {
         else {
           increaseShotsFired()
           removeHealthFromPlayer()
-          changePlayer()
+          setTimeout(() => {
+            changePlayer();
+          }, 1000);
         }
         return  {...zone, successfullHitFromPlayerTwo: zone.successfullHitFromPlayerTwo = true}
       }
@@ -163,7 +182,9 @@ const handlePlayerFire = (id: number) => {
         }
         else {
           increaseShotsFired()
-          changePlayer()
+          setTimeout(() => {
+            changePlayer();
+          }, 2000);
         }
         return  {...zone, failedHitFromPlayerTwo: zone.failedHitFromPlayerTwo = true}
       }
@@ -173,6 +194,7 @@ const handlePlayerFire = (id: number) => {
     }))
 }
 
+//Funktion som tar bort ett skepp från spelare. Används när spelare kallar på handlePlayerFire() på en zon där motståndaren har skepp.
 const removeOneShipFromPlayer = () => {
   
   if (playerOne.isPlaying == true) {
@@ -190,6 +212,7 @@ const removeOneShipFromPlayer = () => {
   };
   
 }
+//Funktion som tar bort en "hälsopoäng" från spelare. Används när spelare kallar på handlePlayerFire() på en zon där motståndaren har skepp.
 
   const removeHealthFromPlayer = () => {
     
@@ -206,9 +229,11 @@ const removeOneShipFromPlayer = () => {
         health: prevPlayerOne.health - 1
       }));
     }
+    //Används för att kontrollera om en av de två spelarna har förlorat.
     increasePlayerVictories()
   };
 
+//Funktion för att öka property shotsFired som sedan används för att räkna ut spelares träffsäkerhet.
   const increaseShotsFired = () => {
     if (playerOne.isPlaying == true) {
 
@@ -263,6 +288,7 @@ const removeOneShipFromPlayer = () => {
   }
 
   const resetGame = () => {
+    setShowShips(true)
     const resetPlayerOne = {
       ...playerOne,
       id: playerOne.id,
@@ -301,12 +327,8 @@ const removeOneShipFromPlayer = () => {
     
   }
 
-  
-  
-  
 
   return (
-   
     <div className="App">
       <Scoreboard firstPlayer={playerOne} secondPlayer={playerTwo}/>
       <BattleMap 
@@ -319,7 +341,10 @@ const removeOneShipFromPlayer = () => {
       playerTwo={playerTwo}
       changePlayer={changePlayer}
       handleShipPlacement={handleShipPlacement}
-      list={zoneList} />
+      list={zoneList}
+      showShips={showShips}
+      handleShips={handleShips} />
+      
     </div>
   );
 }
