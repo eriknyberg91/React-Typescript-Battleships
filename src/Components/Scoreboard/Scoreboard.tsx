@@ -5,7 +5,7 @@ interface Props {
     firstPlayer: IPlayer;
     secondPlayer: IPlayer;
 }
-
+//En scoreboard med två spelare och information om spelare som hälsa, skepp, namn.
 const Scoreboard = ({firstPlayer, secondPlayer} : Props) => {
   
     const healthIcons = (health: number) => {

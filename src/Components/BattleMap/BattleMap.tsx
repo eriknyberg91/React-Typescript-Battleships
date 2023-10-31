@@ -7,22 +7,19 @@ import { useState } from 'react';
 interface Props {
   list: IBattleZone[];
   handleShipPlacement(id: number): void;
-  changePlayer(): void;
   handlePlayerFire(id: number): void;
-  changeGameState(): void;
   resetGame(): void;
   calculateAccuracy(player: IPlayer): void;
   playerOne: IPlayer;
   playerTwo: IPlayer;
   gameIsPlaying: boolean;
   showShips: boolean;
-  finishPlacements(): void;
+  finishShipPlacements(): void;
 }
 
-const BattleMap = ({showShips, finishPlacements, list,playerOne, playerTwo, gameIsPlaying, handleShipPlacement, changePlayer, handlePlayerFire, changeGameState, resetGame, calculateAccuracy}: Props) => {
+//Component som visar olika spelplaner beroende på vilken spelare som är aktiv samt ändrar content beroende på spelfas.
+const BattleMap = ({ list,playerOne, playerTwo, gameIsPlaying, showShips, handleShipPlacement, handlePlayerFire, resetGame, calculateAccuracy, finishShipPlacements}: Props) => {
   
-  
-
   return (
     <div className="battle-map-container" >
           <div className="battle-maps-container"style={{display: gameIsPlaying ? 'block' : 'none'}}>
@@ -30,7 +27,7 @@ const BattleMap = ({showShips, finishPlacements, list,playerOne, playerTwo, game
             <div className="intro-container">
               <h2>Current Player: {playerOne.isPlaying ? playerOne.playerName : playerTwo.playerName}</h2>
               <p style={{display: showShips ? 'block' : 'none'}}> Press a zone with a ship to undo placement</p>
-              <button className='confirm-placement-button' onClick={() => finishPlacements()} style={{ display: (playerOne.isPlaying && playerOne.shipsLeftToPlace === 0 && showShips)  || (playerTwo.isPlaying && playerTwo.shipsLeftToPlace === 0  && showShips) ? 'block' : 'none' }}>Confirm Placement</button>
+              <button className='confirm-placement-button' onClick={() => finishShipPlacements()} style={{ display: (playerOne.isPlaying && playerOne.shipsLeftToPlace === 0 && showShips)  || (playerTwo.isPlaying && playerTwo.shipsLeftToPlace === 0  && showShips) ? 'block' : 'none' }}>Confirm Placement</button>
             </div>
           
             <div className="battlemap" style={{ display: playerOne.isPlaying ? 'grid' : 'none' }}>
@@ -48,8 +45,6 @@ const BattleMap = ({showShips, finishPlacements, list,playerOne, playerTwo, game
                     failedHitFromPlayerTwo={zone.failedHitFromPlayerTwo}
                     handleShipPlacement={handleShipPlacement}
                     handlePlayerFire={handlePlayerFire}
-                    playerOneShipsLeftToPlace={playerOne.shipsLeftToPlace}
-                    playerTwoShipsLeftToPlace={playerTwo.shipsLeftToPlace}
                     showShips={showShips} />
                     ))}
             </div>
@@ -69,14 +64,11 @@ const BattleMap = ({showShips, finishPlacements, list,playerOne, playerTwo, game
                       failedHitFromPlayerTwo={zone.failedHitFromPlayerTwo}
                       handleShipPlacement={handleShipPlacement}
                       handlePlayerFire={handlePlayerFire}
-                      playerOneShipsLeftToPlace={playerOne.shipsLeftToPlace}
-                      playerTwoShipsLeftToPlace={playerTwo.shipsLeftToPlace}
                       showShips={showShips} />
                     ))}
               </div>
       </div>
       
-
       <div className="end-game-container" style={{display: gameIsPlaying ? 'none' : 'flex' }}>
         <h1>Game has ended.</h1>
         <h2>Winning Player: {playerOne.health == 0 ? playerTwo.playerName : playerOne.playerName}</h2>
@@ -88,8 +80,6 @@ const BattleMap = ({showShips, finishPlacements, list,playerOne, playerTwo, game
         <button className='play-again-button' onClick={() => resetGame()}>Play again!</button>
       </div>  
     </div>
-    
-    
   );
 };
 
