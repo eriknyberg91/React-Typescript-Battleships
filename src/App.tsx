@@ -123,16 +123,7 @@ const handleShipPlacement = (id: number) => {
       return zone;
 
     }))
-
-    /* if (playerOne.isPlaying && playerOne.shipsLeftToPlace === 0) {
-      changePlayer()
-    }
-    else if (playerTwo.isPlaying && playerTwo.shipsLeftToPlace === 0) {
-      handleShips()
-      changePlayer()
-    } */
-
-    
+  
 }
 
 const handlePlayerFire = (id: number) => {

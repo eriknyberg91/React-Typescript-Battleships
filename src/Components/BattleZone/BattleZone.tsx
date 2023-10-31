@@ -23,7 +23,7 @@ const BattleZone = ({showShips, id,playerOne,playerTwo,shipPlacedByPlayerOne,shi
   
 
   return (
-    <div className="battle-zone-container" onClick={() => {playerOne.shipsLeftToPlace >= 1 || playerTwo.shipsLeftToPlace >= 1 ? handleShipPlacement(id) : handlePlayerFire(id)}}>
+    <div className="battle-zone-container" onClick={() => {playerOne.shipsLeftToPlace === 0 && playerTwo.shipsLeftToPlace === 0 && !showShips ? handlePlayerFire(id) : handleShipPlacement(id)}}>
       <p>{id}</p>
       {playerOne.isPlaying && (
         

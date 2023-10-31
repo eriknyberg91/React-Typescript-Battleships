@@ -30,7 +30,7 @@ const BattleMap = ({showShips, finishPlacements, list,playerOne, playerTwo, game
             <div className="intro-container">
               <h2>Current Player: {playerOne.isPlaying ? playerOne.playerName : playerTwo.playerName}</h2>
               <p style={{display: showShips ? 'block' : 'none'}}> Press a zone with a ship to undo placement</p>
-              <button onClick={() => finishPlacements()} style={{ display: (playerOne.isPlaying && playerOne.shipsLeftToPlace === 0) || (playerTwo.isPlaying && playerTwo.shipsLeftToPlace === 0) ? 'block' : 'none' }}>Confirm Placement</button>
+              <button className='confirm-placement-button' onClick={() => finishPlacements()} style={{ display: (playerOne.isPlaying && playerOne.shipsLeftToPlace === 0 && showShips)  || (playerTwo.isPlaying && playerTwo.shipsLeftToPlace === 0  && showShips) ? 'block' : 'none' }}>Confirm Placement</button>
             </div>
           
             <div className="battlemap" style={{ display: playerOne.isPlaying ? 'grid' : 'none' }}>
