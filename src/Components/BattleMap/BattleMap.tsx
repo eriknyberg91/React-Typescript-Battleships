@@ -16,10 +16,10 @@ interface Props {
   playerTwo: IPlayer;
   gameIsPlaying: boolean;
   showShips: boolean;
-  handleShips(): void;
+  finishPlacements(): void;
 }
 
-const BattleMap = ({showShips, handleShips, list,playerOne, playerTwo, gameIsPlaying, handleShipPlacement, changePlayer, handlePlayerFire, changeGameState, resetGame, calculateAccuracy}: Props) => {
+const BattleMap = ({showShips, finishPlacements, list,playerOne, playerTwo, gameIsPlaying, handleShipPlacement, changePlayer, handlePlayerFire, changeGameState, resetGame, calculateAccuracy}: Props) => {
   
   
 
@@ -29,7 +29,8 @@ const BattleMap = ({showShips, handleShips, list,playerOne, playerTwo, gameIsPla
           
             <div className="intro-container">
               <h2>Current Player: {playerOne.isPlaying ? playerOne.playerName : playerTwo.playerName}</h2>
-              
+              <p style={{display: showShips ? 'block' : 'none'}}> Press a zone with a ship to undo placement</p>
+              <button onClick={() => finishPlacements()} style={{ display: (playerOne.isPlaying && playerOne.shipsLeftToPlace === 0) || (playerTwo.isPlaying && playerTwo.shipsLeftToPlace === 0) ? 'block' : 'none' }}>Confirm Placement</button>
             </div>
           
             <div className="battlemap" style={{ display: playerOne.isPlaying ? 'grid' : 'none' }}>

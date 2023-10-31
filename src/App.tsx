@@ -7,24 +7,10 @@ import './App.css'
 
 function App() {
 
+  
+  
+  // !!! TODO !!! If player tries to undo ship placement at 1 Ship left, game continues.
 
-  //TODO : 
-  //DONE  --- Place ships when shipcount > 0, move on to Fire phase 
-  //??? Re-render one battlemap rather than different ones
-  //DONE ---Reduce health of player when ship gets hit, visual input
-  //DONE ---End game when one player reaches 0 health
-  //DONE --- Add victory to winning player
-  //DONE Reset Game
-  
-  
-  //Better way to handle duplicate clicks on zone rather than alert
-  //Name of classes (IBattleZone, IPlayer) ??? 
-  
-  
-  //DONE ??? More stats, health styling - Statistics && SCOREBOARD!! (Ship Counter, Green for alive Red for hit? on Top?)
-  //DONE Use BattleZone to render?
-  
-  
   //TODO: Shorten if-statements?
   //Styling
   //Formating and readability
@@ -68,9 +54,21 @@ function App() {
   });
 
   const [showShips, setShowShips] = useState<boolean>(true)
-  
-  const handleShips = () => {
+
+  const handleShowShips = () => {
     setShowShips(false)
+  }
+  
+  const finishPlacements = () => {
+    
+    if (playerOne.isPlaying) {
+      changePlayer()
+    }
+    else if (playerTwo.isPlaying) {
+      handleShowShips()
+      changePlayer()
+    }
+    
   }
 
   
@@ -110,7 +108,7 @@ const handleShipPlacement = (id: number) => {
         removeOneShipFromPlayer()
         return  {...zone, shipPlacedByPlayerOne: !zone.shipPlacedByPlayerOne}
       }
-      else if (zone.id == id && playerOne.isPlaying && zone.shipPlacedByPlayerOne && playerOne.shipsLeftToPlace > 0){
+      else if (zone.id == id && playerOne.isPlaying && zone.shipPlacedByPlayerOne && playerOne.shipsLeftToPlace >= 0){
         addOneShipToPlayer()
         return {...zone, shipPlacedByPlayerOne: !zone.shipPlacedByPlayerOne}
       }
@@ -118,7 +116,7 @@ const handleShipPlacement = (id: number) => {
         removeOneShipFromPlayer()
         return {...zone, shipPlacedByPlayerTwo: !zone.shipPlacedByPlayerTwo}
       }
-      else if (zone.id == id && playerTwo.isPlaying == true && zone.shipPlacedByPlayerTwo && playerTwo.shipsLeftToPlace > 0) {
+      else if (zone.id == id && playerTwo.isPlaying == true && zone.shipPlacedByPlayerTwo && playerTwo.shipsLeftToPlace >= 0) {
         addOneShipToPlayer()
         return {...zone, shipPlacedByPlayerTwo: !zone.shipPlacedByPlayerTwo}
       }
@@ -126,13 +124,13 @@ const handleShipPlacement = (id: number) => {
 
     }))
 
-    if (playerOne.isPlaying && playerOne.shipsLeftToPlace == 1) {
+    /* if (playerOne.isPlaying && playerOne.shipsLeftToPlace === 0) {
       changePlayer()
     }
-    else if (playerTwo.isPlaying && playerTwo.shipsLeftToPlace == 1) {
+    else if (playerTwo.isPlaying && playerTwo.shipsLeftToPlace === 0) {
       handleShips()
       changePlayer()
-    }
+    } */
 
     
 }
@@ -369,7 +367,7 @@ const addOneShipToPlayer = () => {
       handleShipPlacement={handleShipPlacement}
       list={zoneList}
       showShips={showShips}
-      handleShips={handleShips} />
+      finishPlacements={finishPlacements} />
       
     </div>
   );
